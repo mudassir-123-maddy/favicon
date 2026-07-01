@@ -1,0 +1,10 @@
+@extends('Main')
+@section('navbar')
+    @include('Navbar')
+@endsection
+@section('pages')
+    @include('pages')
+@endsection
+@section('footer')
+@include('footer')
+@endsection

@@ -219,9 +219,6 @@
         outline: none;
         font-family: monospace;
     }
-.hdhd{
-    jdbnfdjhfn
-}
     .color-swatches {
         display: flex;
         flex-wrap: wrap;

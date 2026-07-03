@@ -111,7 +111,7 @@
         border-left: 1px solid var(--bs-card-border);
     }
 
-    .btn-login {
+    .btn-reg {
         color: #7367f0;
         font-weight: 600;
         font-size: 0.85rem;
@@ -122,29 +122,11 @@
         transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
     }
 
-    .btn-login:hover {
+    .btn-reg:hover {
         background: #7367f0;
         color: #fff;
         transform: translateY(-1px);
     }
-
-    .btn-logout {
-        background: linear-gradient(to bottom right, #7567f8, #6B5CE7);
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 18px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: opacity 0.18s ease, transform 0.18s ease;
-    }
-
-    .btn-logout:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-    }
-
     @media (max-width: 991px) {
         .nav-inner {
             width: 100%;
@@ -207,10 +189,12 @@
 
                     <a href="#" class="btn-try">Generate Free</a>
 
-                    <div class="nav-auth">
+                </div>
+            </div>
+            <div class="nav-auth">
                         @guest
-                        <a href="{{ route('login') }}" class="btn-login">Login</a>
-                        <a href="{{ route('register') }}" class="btn-try">Sign Up</a>
+                        <a href="{{ route('login') }}" class="btn-reg">Login</a>
+                        <a href="{{ route('register') }}" class="btn-reg">Sign Up</a>
                         @else
                         <a href="{{ route('dashboard') }}" class="btn-login">Dashboard</a>
                         <form method="POST" action="{{ route('logout') }}">
@@ -219,8 +203,6 @@
                         </form>
                         @endguest
                     </div>
-                </div>
-            </div>
     </nav>
 </div>
 @push('scripts')

@@ -1,4 +1,15 @@
 <x-guest-layout>
+
+    @if ($errors->any())
+        <div class="mb-4 p-4 rounded-lg bg-red-50 border border-red-200">
+            <ul class="text-sm text-red-600 space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="mb-6 text-center">
         <h1 class="text-2xl font-extrabold text-gray-900">Welcome back</h1>
         <p class="text-sm text-gray-500 mt-1">Log in to your FaviGen account</p>
@@ -14,7 +25,6 @@
         <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full rounded-lg border-gray-300 focus:border-[#7367f0] focus:ring-[#7367f0]" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
@@ -25,8 +35,6 @@
                             type="password"
                             name="password"
                             required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Remember Me -->

@@ -192,17 +192,19 @@
                 </div>
             </div>
             <div class="nav-auth">
-                        @guest
-                        <a href="{{ route('login') }}" class="btn-reg">Login</a>
-                        <a href="{{ route('register') }}" class="btn-reg">Sign Up</a>
-                        @else
-                        <a href="{{ route('dashboard') }}" class="btn-login">Dashboard</a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="btn-logout">Logout</button>
-                        </form>
-                        @endguest
-                    </div>
+                    @guest
+                    <a href="{{ route('login') }}" class="btn-reg">Login</a>
+                    <a href="{{ route('register') }}" class="btn-reg">Sign Up</a>
+                    @else
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn-reg" style="cursor: pointer;">Logout</button>
+                    </form>
+                    <span style="color: #3d4148ff; font-weight: 400; font-size: 1rem;">
+                        {{ Auth::user()->name }}
+                    </span>
+                    @endguest
+          </div>
     </nav>
 </div>
 @push('scripts')

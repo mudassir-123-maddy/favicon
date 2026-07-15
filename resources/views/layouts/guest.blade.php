@@ -24,7 +24,7 @@
                 background: linear-gradient(135deg, #f5f4ff 0%, #eef0ff 50%, #f5f4ff 100%);
             }
 
-            .auth-logo-box {
+            /* .auth-logo-box {
                 width: 64px;
                 height: 64px;
                 border-radius: 18px;
@@ -39,7 +39,7 @@
                 border-radius: 16px;
                 border: 1px solid rgba(115, 103, 240, 0.12);
                 box-shadow: 0 10px 30px rgba(31, 26, 70, 0.08);
-            }
+            } */
         </style>
 
     </head>

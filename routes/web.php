@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('{language}/', [HomeController::class, 'index'])
+    ->where('language', 'en|ru|es')
+    ->name('home.lang');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

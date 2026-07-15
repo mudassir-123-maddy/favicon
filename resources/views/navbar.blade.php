@@ -161,17 +161,17 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto gap-4">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#simple-process">How It Works</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">FAQ</a>
-                    </li>
-                </ul>
+<ul class="navbar-nav mx-auto gap-4">
+    <li class="nav-item">
+        <a class="nav-link" href="#features">{{ __('navbar.features') }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#simple-process">{{ __('navbar.how_it_works') }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#about">{{ __('navbar.faq') }}</a>
+    </li>
+</ul>
                 <div class="d-flex align-items-center gap-1">
                     <a href="#" class="dark-btn" id="themeToggle">
                         <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -187,23 +187,33 @@
                         </svg>
                     </a>
 
-                    <a href="#" class="btn-try">Generate Free</a>
-
-                </div>
-            </div>
-            <div class="nav-auth">
+                   <a href="#" class="btn-try">{{ __('navbar.generate_free') }}</a>
+                        </div>
+                        </div>
+                        <div class="nav-auth">
                     @guest
-                    <a href="{{ route('login') }}" class="btn-reg">Login</a>
-                    <a href="{{ route('register') }}" class="btn-reg">Sign Up</a>
+                    <a href="{{ route('login') }}" class="btn-reg">{{ __('navbar.login') }}</a>
+                    <a href="{{ route('register') }}" class="btn-reg">{{ __('navbar.signup') }}</a>
                     @else
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="btn-reg" style="cursor: pointer;">Logout</button>
+                        <button type="submit" class="btn-reg" style="cursor: pointer;">{{ __('navbar.logout') }}</button>
                     </form>
                     <span style="color: #3d4148ff; font-weight: 400; font-size: 1rem;">
                         {{ Auth::user()->name }}
                     </span>
                     @endguest
+                    <div class="lang-dropdown">
+                                <div class="lang-btn" onclick="var m = document.getElementById('langMenu'); m.style.display = (m.style.display === 'none' || m.style.display === '') ? 'block' : 'none';">
+                                {{ strtoupper(app()->getLocale()) }}
+                                <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                            </div>
+                            <div class="lang-menu" id="langMenu" style="display:none; position:absolute; top:100%; left:0; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.08); margin-top:6px; overflow:hidden; z-index:9999; min-width:140px;">
+                                <a href="{{ url('/') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">English</a>
+                                <a href="{{ url('/ru') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">Русский</a>
+                                <a href="{{ url('/es') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">Español</a>
+                            </div>
+                        </div>
           </div>
     </nav>
 </div>

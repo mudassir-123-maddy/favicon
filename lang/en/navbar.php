@@ -7,5 +7,5 @@ return [
     'features' => 'Features',
     'how_it_works' => 'How It Works',
     'faq' => 'FAQ',
-    'generate_free' => 'Generate Free',
+    'generate_free' => 'Get strated',
 ];

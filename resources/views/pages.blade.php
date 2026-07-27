@@ -1,3 +1,11 @@
+@if(session('result'))
+    @php $result = session('result'); @endphp
+    @if(!isset($result['error']) && $result['url'])
+        <script>
+            window.serverUploadedImageUrl = "{{ $result['url'] }}";
+        </script>
+    @endif
+@endif
 @push('style')
 <style>
     * {
@@ -1045,8 +1053,6 @@
     }
 </style>
 @endpush
-
-
 <div class="mainsection">
     <div class="hero-section pt-5">
         <div class="container">
@@ -1100,19 +1106,26 @@
                             </section>
                             <section id="imageInputSection" style="display:none;">
                                 <label class="fg-label text-muted">{{ __('pages.upload_label') }}</label>
-                                <div class="image-upload-box" id="imageUploadBox" style="position: relative; height: 505px;">
-                                    <input type="file" id="imageFileInput" accept="image/png, image/jpeg, image/svg+xml, image/gif, image/webp" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
-                                    <div id="uploadPlaceholder" style="pointer-events: none; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
-                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                            <polyline points="17 8 12 3 7 8"></polyline>
-                                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                                        </svg>
-                                        <p class="upload-text" style="font-size: 16px; margin-top: 15px;">{{ __('pages.upload_text') }}</p>
-                                        <p class="upload-subtext">{{ __('pages.upload_subtext') }}</p>
+                                <form action="" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="image-upload-box" id="imageUploadBox" style="position: relative; height: 505px;">
+                                        <input type="file" name="w_image" id="imageFileInput" accept="image/png, image/jpeg, image/svg+xml, image/gif, image/webp" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                                        <div id="uploadPlaceholder" style="pointer-events: none; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                            </svg>
+                                            <p class="upload-text" style="font-size: 16px; margin-top: 15px;">{{ __('pages.upload_text') }}</p>
+                                            <p class="upload-subtext">{{ __('pages.upload_subtext') }}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </section>
+                                    <button type="submit" class="generate-btn mt-3">Upload Image</button>
+                                </form>
+
+<!-- NEW: shows the uploaded image URL -->
+<p id="uploadedUrlText" style="font-size: 12px; color: #64748b; margin-top: 10px; word-break: break-all; display: none;"></p>
+                          </section>
                             <section id="emojiInputSection" style="display:none;">
                                 <label class="fg-label text-muted">{{ __('pages.emoji_label') }}</label>
                                 <div class="emoji-grid" id="emojiGrid"></div>
@@ -1956,7 +1969,6 @@
             updatePreview();
         });
 
-
         // ============================================
         // 10. TAB SWITCHING — Text / Emoji / Image
         // ============================================
@@ -1984,8 +1996,20 @@
             updatePreview();
         });
 
+        if (window.serverUploadedImageUrl) {
+            uploadedImageData = window.serverUploadedImageUrl;
+            currentMode = 'image';
+            $('.tab-btn').removeClass('active');
+            $('.tab-btn[data-tab="image"]').addClass('active');
+            $('#textInputSection, #imageInputSection, #emojiInputSection').hide();
+            $('#textOnlySettings').hide();
+            $('#imageInputSection').show();
+            // NEW: show the URL text
+            $('#uploadedUrlText').text('Image URL: ' + window.serverUploadedImageUrl).show();
+            updatePreview();
+        }
     }); // END of main $(document).ready
-
+     // If the server just gave us a freshly uploaded image, show it
 
     // ============================================
     // 11. FAQ ACCORDION — open/close questions

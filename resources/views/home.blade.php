@@ -3,7 +3,7 @@
     @include('Navbar')
 @endsection
 @section('pages')
-<br><br><br><br><br><br><br><br><br><br>
+<!-- <br><br><br><br><br><br><br><br><br><br>
 <form action="" method="POST" enctype="multipart/form-data">
     @csrf
     <input type="file" name="w_image" id="imageInput" accept="image/*">
@@ -22,7 +22,7 @@
         @endif
     @endif
 @endif
-<br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br> -->
     @include('pages')
 @endsection
 @section('footer')

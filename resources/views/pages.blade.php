@@ -1005,6 +1005,44 @@
         background: rgba(117, 103, 248, 0.18);
         box-shadow: 0 0 0 2px #7567f8;
     }
+    /* ---------- Scroll reveal animation ---------- */
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.reveal-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Optional: stagger children inside a revealed container */
+    .reveal-stagger > * {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal-stagger.reveal-visible > * {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .reveal-stagger.reveal-visible > *:nth-child(1) { transition-delay: 0s; }
+    .reveal-stagger.reveal-visible > *:nth-child(2) { transition-delay: 0.08s; }
+    .reveal-stagger.reveal-visible > *:nth-child(3) { transition-delay: 0.16s; }
+    .reveal-stagger.reveal-visible > *:nth-child(4) { transition-delay: 0.24s; }
+
+    /* Respect users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        .reveal,
+        .reveal-stagger > * {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+        }
+    }
 
     @media (max-width: 576px) {
         .cta-title {
@@ -1226,7 +1264,6 @@
                                     <div class="size-label">200×200</div>
                                 </div>
                             </div>
-                            <p id="previewUrlText" style="font-size: 11px; color: #64748b; margin-top: 10px; word-break: break-all; text-align: center; display: none;"></p>
                         </div>
                     </div>
                     <div class="fg-card">
@@ -1256,13 +1293,27 @@
                                     <div class="size-label">128px</div>
                                 </div>
                             </div>
+
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="button" class="generate-btn" id="downloadZipBtn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 15V3"></path>
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <path d="m7 10 5 5 5-5"></path>
+                                    </svg>
+                                    Download All (ZIP)
+                                </button>
+                                <button type="button" class="generate-btn" id="downloadOneBtn" style="background:#fff; color:#6B5CE7; border:1.5px solid #6B5CE7;">
+                                    Download PNG
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <section class="sizes-section">
+    <section class="sizes-section reveal">
         <div class="container pt-5">
             <div class="text-center mb-4">
                 <p class="fg-sizes-subtitle">{{ __('pages.sizes_subtitle') }}</p>
@@ -1307,7 +1358,7 @@
             </div>
         </div>
     </section>
-    <section class="how-it-works-section">
+    <section class="how-it-works-section reveal">
         <div class="container pt-5">
             <div class="text-center mb-4">
                 <p class="fg-how-subtitle">{{ __('pages.how_subtitle') }}</p>
@@ -1338,14 +1389,14 @@
             </div>
         </div>
     </section>
-    <section class="why-favigen-section">
+    <section class="why-favigen-section reveal">
         <div class="container pt-5">
             <div class="text-center mb-4">
                 <p class="fg-why-subtitle">{{ __('pages.why_subtitle') }}</p>
                 <h2 class="fg-why-title">{{ __('pages.why_title') }}</h2>
                 <p class="fg-why-description">{{ __('pages.why_description') }}</p>
             </div>
-            <div class="d-flex flex-wrap justify-content-center gap-3 mb-3">
+            <div class="d-flex flex-wrap justify-content-center gap-3 mb-3 reveal-stagger">
                 <div class="fg-feature-card">
                     <div class="fg-feature-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-4 h-4 text-indigo-600 dark:text-indigo-400" aria-hidden="true">
@@ -1414,7 +1465,7 @@
             </div>
         </div>
     </section>
-    <section class="use-cases-section">
+    <section class="use-cases-section reveal">
         <div class="container pt-5">
             <div class="text-center mb-4">
                 <p class="fg-use-subtitle">{{ __('pages.use_subtitle') }}</p>
@@ -1504,7 +1555,7 @@
             </div>
         </div>
     </section>
-    <section class="about-section">
+    <section class="about-section reveal">
         <div class="container pt-5">
             <div class="row g-4 justify-content-center">
                 <div class="col-12 col-md-5">
@@ -1606,7 +1657,7 @@
             </div>
         </div>
     </section>
-    <section class="faq-section pt-5">
+    <section class="faq-section pt-5 reveal">
         <div class="container">
             <p class="simple-badge">{{ __('pages.faq_badge') }}</p>
             <h2 class="how-title-4">{{ __('pages.faq_title') }}</h2>
@@ -1675,8 +1726,11 @@
         </div>
     </section>
 </div>
+
+
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
     $(document).ready(function() {
 
@@ -1684,31 +1738,14 @@
         // 1. SWATCH COLORS — paint the color dots
         // ============================================
         const swatchColors = {
-            'swatch--white': {
-                bg: '#ffffff',
-                border: '#e2e8f0'
-            },
-            'swatch--black': {
-                bg: '#000000'
-            },
-            'swatch--indigo': {
-                bg: '#6366f1'
-            },
-            'swatch--pink': {
-                bg: '#ec4899'
-            },
-            'swatch--emerald': {
-                bg: '#10b981'
-            },
-            'swatch--amber': {
-                bg: '#f59e0b'
-            },
-            'swatch--violet': {
-                bg: '#8b5cf6'
-            },
-            'swatch--sky': {
-                bg: '#0ea5e9'
-            },
+            'swatch--white': { bg: '#ffffff', border: '#e2e8f0' },
+            'swatch--black': { bg: '#000000' },
+            'swatch--indigo': { bg: '#6366f1' },
+            'swatch--pink': { bg: '#ec4899' },
+            'swatch--emerald': { bg: '#10b981' },
+            'swatch--amber': { bg: '#f59e0b' },
+            'swatch--violet': { bg: '#8b5cf6' },
+            'swatch--sky': { bg: '#0ea5e9' },
         };
 
         $('.swatch').each(function() {
@@ -1823,8 +1860,7 @@
             }
         }
 
-        // run once on page load
-        updatePreview();
+        updatePreview(); // run once on page load
 
 
         // ============================================
@@ -1877,14 +1913,11 @@
         // ============================================
         // 8. IMAGE UPLOAD — click, drag & drop, remove
         // ============================================
-
-        // click the upload box to open file picker
         $('#imageUploadBox').on('click', function(e) {
             if ($(e.target).is('#removeImageBtn')) return;
             $('#imageFileInput').trigger('click');
         });
 
-        // drag & drop onto the upload box
         $('#imageUploadBox')
             .on('dragover', function(e) {
                 e.preventDefault();
@@ -1901,7 +1934,6 @@
                 if (file) handleImageFile(file);
             });
 
-        // remove uploaded image
         $('#removeImageBtn').on('click', function(e) {
             e.stopPropagation();
             uploadedImageData = null;
@@ -1911,21 +1943,23 @@
             updatePreview();
         });
 
-        // file selected from picker
         $('#imageFileInput').on('change', function(e) {
             const file = e.target.files[0];
             if (file) handleImageFile(file);
         });
-        // read file as base64, show instant preview, then auto-submit to upload
+
+        // Validates the picked file, then auto-submits the upload form
+        // immediately — no local preview, the real image only appears
+        // once the API returns a URL (handled in section 11 below).
         function handleImageFile(file) {
             const validTypes = ['image/png', 'image/jpeg', 'image/svg+xml', 'image/gif', 'image/webp'];
             if (!validTypes.includes(file.type)) {
                 alert('Please upload a PNG, JPG, SVG, GIF, or WebP image.');
                 return;
             }
-            // No local base64 preview here — just auto-submit immediately
             $('#imageUploadForm').trigger('submit');
         }
+
 
         // ============================================
         // 9. EMOJI GRID — build the emoji picker
@@ -1952,7 +1986,6 @@
         }
         renderEmojiGrid();
 
-        // click an emoji to select it
         $('#emojiGrid').on('click', '.emoji-item', function() {
             $('.emoji-item').removeClass('selected');
             $(this).addClass('selected');
@@ -1960,6 +1993,7 @@
             currentMode = 'emoji';
             updatePreview();
         });
+
 
         // ============================================
         // 10. TAB SWITCHING — Text / Emoji / Image
@@ -1970,7 +2004,6 @@
 
             const tab = $(this).data('tab');
 
-            // hide all 3 input sections first
             $('#textInputSection, #imageInputSection, #emojiInputSection').hide();
             $('#textOnlySettings').hide();
 
@@ -1988,33 +2021,185 @@
             updatePreview();
         });
 
+
+        // ============================================
+        // 11. SERVER UPLOAD RESULT — runs after page reload
+        //     following a successful image upload
+        // ============================================
         if (window.serverUploadedImageUrl) {
             uploadedImageData = window.serverUploadedImageUrl;
             currentMode = 'image';
+
             $('.tab-btn').removeClass('active');
             $('.tab-btn[data-tab="image"]').addClass('active');
             $('#textInputSection, #imageInputSection, #emojiInputSection').hide();
             $('#textOnlySettings').hide();
             $('#imageInputSection').show();
-            $('#previewUrlText').text(window.serverUploadedImageUrl).show(); // NEW
+
+            $('#previewUrlText').text(window.serverUploadedImageUrl).show();
+
             updatePreview();
         }
+
+
+        // ============================================
+        // 12. DOWNLOAD — render favicon to canvas, export
+        //     as ZIP (all sizes) or a single PNG
+        // ============================================
+        const downloadSizes = [16, 32, 48, 64, 128, 180, 192, 512];
+
+        function renderFaviconToBlob(size) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                const shape = $('.shape-btn.active').data('shape');
+                const bgColor = $('#bgColorInput').val() || '#6366f1';
+
+                function drawShapeClip() {
+                    ctx.beginPath();
+                    if (shape === 'circle') {
+                        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+                    } else if (shape === 'rounded') {
+                        const r = size * 0.2;
+                        ctx.moveTo(r, 0);
+                        ctx.arcTo(size, 0, size, size, r);
+                        ctx.arcTo(size, size, 0, size, r);
+                        ctx.arcTo(0, size, 0, 0, r);
+                        ctx.arcTo(0, 0, size, 0, r);
+                    } else {
+                        ctx.rect(0, 0, size, size);
+                    }
+                    ctx.closePath();
+                    ctx.clip();
+                }
+
+                ctx.save();
+                drawShapeClip();
+                ctx.fillStyle = bgColor;
+                ctx.fillRect(0, 0, size, size);
+
+                if (currentMode === 'image' && uploadedImageData) {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = function() {
+                        const scale = Math.min(size / img.width, size / img.height);
+                        const w = img.width * scale;
+                        const h = img.height * scale;
+                        ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+                        ctx.restore();
+                        canvas.toBlob((blob) => resolve(blob), 'image/png');
+                    };
+                    img.onerror = function() {
+                        ctx.restore();
+                        canvas.toBlob((blob) => resolve(blob), 'image/png');
+                    };
+                    img.src = uploadedImageData;
+                } else {
+                    const text = currentMode === 'emoji' ? selectedEmoji : ($('#textInput').val() || 'FG');
+                    const textColor = currentMode === 'emoji' ? '#ffffff' : ($('#textColorInput').val() || '#ffffff');
+                    const fontWeight = $('#fontWeightSelect').val() || '800';
+                    ctx.fillStyle = textColor;
+                    ctx.font = `${fontWeight} ${size * 0.5}px "Plus Jakarta Sans", sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(text, size / 2, size / 2);
+                    ctx.restore();
+                    canvas.toBlob((blob) => resolve(blob), 'image/png');
+                }
+            });
+        }
+
+        $('#downloadZipBtn').on('click', async function() {
+            const $btn = $(this);
+            $btn.prop('disabled', true).css('opacity', 0.6);
+
+            try {
+                const zip = new JSZip();
+                for (const size of downloadSizes) {
+                    const blob = await renderFaviconToBlob(size);
+                    zip.file(`favicon-${size}x${size}.png`, blob);
+                }
+                const content = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'favicons.zip';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error('ZIP generation failed:', err);
+                alert('Something went wrong generating the ZIP. Please try again.');
+            } finally {
+                $btn.prop('disabled', false).css('opacity', 1);
+            }
+        });
+
+        $('#downloadOneBtn').on('click', async function() {
+            const $btn = $(this);
+            $btn.prop('disabled', true).css('opacity', 0.6);
+
+            try {
+                const blob = await renderFaviconToBlob(512);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'favicon.png';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error('PNG generation failed:', err);
+                alert('Something went wrong generating the PNG. Please try again.');
+            } finally {
+                $btn.prop('disabled', false).css('opacity', 1);
+            }
+        });
+     
+        // ============================================
+        // 14. SCROLL REVEAL — fade+slide elements in
+        //     as they enter the viewport
+        // ============================================
+        const $revealElements = $('.reveal, .reveal-stagger');
+
+        if ('IntersectionObserver' in window && $revealElements.length) {
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        $(entry.target).addClass('reveal-visible');
+                        observer.unobserve(entry.target); // animate once only
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            $revealElements.each(function() {
+                revealObserver.observe(this);
+            });
+        } else {
+            $revealElements.addClass('reveal-visible');
+        }
     }); // END of main $(document).ready
-    // If the server just gave us a freshly uploaded image, show it
+
 
     // ============================================
-    // 11. FAQ ACCORDION — open/close questions
+    // 13. FAQ ACCORDION — open/close questions
     // ============================================
     $(document).ready(function() {
         $('.faq-item').on('click', function() {
-            var $this = $(this);
-            var isActive = $this.hasClass('active');
+            const $this = $(this);
+            const isActive = $this.hasClass('active');
 
-            // close all items
             $('.faq-item').removeClass('active').find('.faq-answer').slideUp(250);
             $('.faq-icon').text('+');
 
-            // open the clicked one if it was closed
             if (!isActive) {
                 $this.addClass('active').find('.faq-answer').slideDown(250);
                 $this.find('.faq-icon').text('×');

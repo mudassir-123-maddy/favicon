@@ -201,16 +201,21 @@
                 </span>
                 @endguest --}}
                 <div class="lang-dropdown">
-                   <div class="lang-btn" onclick="var m = document.getElementById('langMenu'); m.style.display = (m.style.display === 'none' || m.style.display ===    '') ? 'block' : 'none';">
-                            {{ strtoupper(app()->getLocale()) }}
-                            <svg width="26px" height="26px" viewBox="-2.4 -2.4 28.80 28.80" role="img" xmlns="http://www.w3.org/2000/svg" aria-labelledby="languageIconTitle" stroke="#000000" stroke-width="1" stroke-linecap="square" stroke-linejoin="miter" fill="none" color="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="1.104"></g><g id="SVGRepo_iconCarrier"> <title id="languageIconTitle">Language</title> <circle cx="12" cy="12" r="10"></circle> <path stroke-linecap="round" d="M12,22 C14.6666667,19.5757576 16,16.2424242 16,12 C16,7.75757576 14.6666667,4.42424242 12,2 C9.33333333,4.42424242 8,7.75757576 8,12 C8,16.2424242 9.33333333,19.5757576 12,22 Z"></path> <path stroke-linecap="round" d="M2.5 9L21.5 9M2.5 15L21.5 15"></path> </g></svg>
-                   </div>
-                        <div class="lang-menu" id="langMenu" style="display:none; position:absolute; top:100%; left:0; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.08); margin-top:6px; overflow:hidden; z-index:9999; min-width:140px;">
-                            <a href="{{ url('/') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">English</a>
-                            <a href="{{ url('/ru') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">Русский</a>
-                            <a href="{{ url('/es') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">Español</a>
-                        </div>
-              </div>
+                    <div class="lang-btn" onclick="var m = document.getElementById('langMenu'); m.style.display = (m.style.display === 'none' || m.style.display === '') ? 'block' : 'none';">
+                        {{ strtoupper(app()->getLocale()) }}
+                        <svg width="20" height="20" viewBox="-2.4 -2.4 28.80 28.80" role="img" xmlns="http://www.w3.org/2000/svg" aria-labelledby="languageIconTitle" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" fill="none">
+                            <title id="languageIconTitle">Language</title>
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path stroke-linecap="round" d="M12,22 C14.6666667,19.5757576 16,16.2424242 16,12 C16,7.75757576 14.6666667,4.42424242 12,2 C9.33333333,4.42424242 8,7.75757576 8,12 C8,16.2424242 9.33333333,19.5757576 12,22 Z"></path>
+                            <path stroke-linecap="round" d="M2.5 9L21.5 9M2.5 15L21.5 15"></path>
+                        </svg>
+                    </div>
+                    <div class="lang-menu" id="langMenu" style="display:none; position:absolute; top:100%; left:0; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.08); margin-top:6px; overflow:hidden; z-index:9999; min-width:140px;">
+                        <a href="{{ url('/') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">English</a>
+                        <a href="{{ url('/ru') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">Русский</a>
+                        <a href="{{ url('/es') }}" style="display:block; padding:10px 18px; font-size:14px; color:#333; text-decoration:none;">Español</a>
+                    </div>
+                </div>
           </div>
     </nav>
 </div>

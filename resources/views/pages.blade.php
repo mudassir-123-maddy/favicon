@@ -938,6 +938,65 @@
         margin: 0;
     }
 
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .fullscreen-loader-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .fullscreen-loader-overlay.active {
+        display: flex !important;
+    }
+
+    .fullscreen-loader-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 48px 56px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fullscreen-loader-spinner {
+        width: 64px;
+        height: 64px;
+        border: 5px solid rgba(117, 103, 248, 0.15);
+        border-top-color: #7567f8;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    .fullscreen-loader-text {
+        margin-top: 24px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .fullscreen-loader-subtext {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+    }
+
     #uploadedPreviewWrap {
         display: flex;
         flex-direction: column;
@@ -1091,6 +1150,16 @@
     }
 </style>
 @endpush
+
+<!-- Fullscreen Loader Overlay -->
+<div class="fullscreen-loader-overlay" id="fullscreenLoader">
+    <div class="fullscreen-loader-card">
+        <div class="fullscreen-loader-spinner"></div>
+        <p class="fullscreen-loader-text">Uploading Image...</p>
+        <p class="fullscreen-loader-subtext">Please wait while we process your image</p>
+    </div>
+</div>
+
 <div class="mainsection">
     <div class="hero-section pt-5">
         <div class="container">
@@ -1147,7 +1216,9 @@
                                 <form class="closest" method="POST" enctype="multipart/form-data" id="imageUploadForm">
                                     @csrf
                                     <div class="image-upload-box" id="imageUploadBox" style="position: relative; height: 505px;">
-                                        <input type="file" name="w_image" id="imageFileInput" accept="image/png, image/jpeg, image/svg+xml, image/gif, image/webp" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                                        <input type="file" name="w_image" id="imageFileInput" accept="image/png, image/jpeg, image/svg+xml, image/gif, image/webp" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 5;">
+                                        
+                                        <!-- Upload Placeholder -->
                                         <div id="uploadPlaceholder" style="pointer-events: none; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
                                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1158,7 +1229,7 @@
                                             <p class="upload-subtext">{{ __('pages.upload_subtext') }}</p>
                                         </div>
                                     </div>
-                                    <button type="submit" class="generate-btn mt-3">Upload Image</button>
+                                    <!-- <button type="submit" class="generate-btn mt-3">Upload Image</button> -->
                                 </form>
 
                                 <!-- NEW: shows the uploaded image URL -->
@@ -1232,12 +1303,12 @@
                                     </div>
                                 </section>
                             </div>
-                            <button class="generate-btn">
+                            <!-- <button class="generate-btn">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                                 </svg>
                                 {{ __('pages.generate_btn') }}
-                            </button>
+                            </button> -->
                         </div>
                     </div>
                 </div>
@@ -1957,6 +2028,7 @@
                 alert('Please upload a PNG, JPG, SVG, GIF, or WebP image.');
                 return;
             }
+            $('#fullscreenLoader').addClass('active');
             $('#imageUploadForm').trigger('submit');
         }
 
@@ -1972,7 +2044,7 @@
             '🔥', '⭐', '🌟', '💥', '💫', '🌈', '☀️', '🌙', '⚡', '❄️',
             '🚀', '🎉', '🎊', '🎁', '🏆', '🎯', '💡', '🔔', '📌', '🔑',
             '🐶', '🐱', '🦊', '🐼', '🦁', '🐸', '🐵', '🦄', '🐳', '🦋',
-            '🍕', '🍔', '🍟', '🍩', '🍪', '☕', '🍎', '🍓', '🍉', '🥑',
+            '🍕', '🍔', '🍟', '🍩', '🍪', '☕', '🍎', '🍓', '🍉', '🥑','🖕',
         ];
 
         function renderEmojiGrid() {
@@ -2039,6 +2111,17 @@
             $('#previewUrlText').text(window.serverUploadedImageUrl).show();
 
             updatePreview();
+            
+            // Scroll to generate button after successful upload
+            setTimeout(function() {
+                const $btn = $('.generate-btn').first();
+                if ($btn.length) {
+                    const offset = $btn.offset().top - 100;
+                    $('html, body').animate({
+                        scrollTop: offset
+                    }, 800, 'swing');
+                }
+            }, 500);
         }
 
 
@@ -2049,69 +2132,102 @@
         const downloadSizes = [16, 32, 48, 64, 128, 180, 192, 512];
 
         function renderFaviconToBlob(size) {
-            return new Promise((resolve) => {
-                const canvas = document.createElement('canvas');
-                canvas.width = size;
-                canvas.height = size;
-                const ctx = canvas.getContext('2d');
+        return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
 
-                const shape = $('.shape-btn.active').data('shape');
-                const bgColor = $('#bgColorInput').val() || '#6366f1';
+        const shape = $('.shape-btn.active').data('shape');
+        const bgColor = $('#bgColorInput').val() || '#6366f1';
 
-                function drawShapeClip() {
-                    ctx.beginPath();
-                    if (shape === 'circle') {
-                        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-                    } else if (shape === 'rounded') {
-                        const r = size * 0.2;
-                        ctx.moveTo(r, 0);
-                        ctx.arcTo(size, 0, size, size, r);
-                        ctx.arcTo(size, size, 0, size, r);
-                        ctx.arcTo(0, size, 0, 0, r);
-                        ctx.arcTo(0, 0, size, 0, r);
-                    } else {
-                        ctx.rect(0, 0, size, size);
-                    }
-                    ctx.closePath();
-                    ctx.clip();
-                }
-
-                ctx.save();
-                drawShapeClip();
-                ctx.fillStyle = bgColor;
-                ctx.fillRect(0, 0, size, size);
-
-                if (currentMode === 'image' && uploadedImageData) {
-                    const img = new Image();
-                    img.crossOrigin = 'anonymous';
-                    img.onload = function() {
-                        const scale = Math.min(size / img.width, size / img.height);
-                        const w = img.width * scale;
-                        const h = img.height * scale;
-                        ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
-                        ctx.restore();
-                        canvas.toBlob((blob) => resolve(blob), 'image/png');
-                    };
-                    img.onerror = function() {
-                        ctx.restore();
-                        canvas.toBlob((blob) => resolve(blob), 'image/png');
-                    };
-                    img.src = uploadedImageData;
-                } else {
-                    const text = currentMode === 'emoji' ? selectedEmoji : ($('#textInput').val() || 'FG');
-                    const textColor = currentMode === 'emoji' ? '#ffffff' : ($('#textColorInput').val() || '#ffffff');
-                    const fontWeight = $('#fontWeightSelect').val() || '800';
-                    ctx.fillStyle = textColor;
-                    ctx.font = `${fontWeight} ${size * 0.5}px "Plus Jakarta Sans", sans-serif`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(text, size / 2, size / 2);
-                    ctx.restore();
-                    canvas.toBlob((blob) => resolve(blob), 'image/png');
-                }
-            });
+        function drawShapeClip() {
+            ctx.beginPath();
+            if (shape === 'circle') {
+                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+            } else if (shape === 'rounded') {
+                const r = size * 0.2;
+                ctx.moveTo(r, 0);
+                ctx.arcTo(size, 0, size, size, r);
+                ctx.arcTo(size, size, 0, size, r);
+                ctx.arcTo(0, size, 0, 0, r);
+                ctx.arcTo(0, 0, size, 0, r);
+            } else {
+                ctx.rect(0, 0, size, size);
+            }
+            ctx.closePath();
+            ctx.clip();
         }
 
+        ctx.save();
+        drawShapeClip();
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, size, size);
+
+        if (currentMode === 'image' && uploadedImageData) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                const scale = Math.min(size / img.width, size / img.height);
+                const w = img.width * scale;
+                const h = img.height * scale;
+                ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+                ctx.restore();
+                canvas.toBlob((blob) => resolve(blob), 'image/png');
+            };
+            img.onerror = function() {
+                ctx.restore();
+                canvas.toBlob((blob) => resolve(blob), 'image/png');
+            };
+            img.src = uploadedImageData;
+        } else {
+            const text = currentMode === 'emoji' ? selectedEmoji : ($('#textInput').val() || 'FG');
+            const textColor = currentMode === 'emoji' ? '#ffffff' : ($('#textColorInput').val() || '#ffffff');
+            const fontWeight = $('#fontWeightSelect').val() || '800';
+            ctx.fillStyle = textColor;
+            ctx.font = `${fontWeight} ${size * 0.5}px "Plus Jakarta Sans", sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, size / 2, size / 2);
+            ctx.restore();
+            canvas.toBlob((blob) => resolve(blob), 'image/png');
+        }
+    });
+}
+
+            // generateReadmeText() goes HERE — after renderFaviconToBlob's closing brace
+            function generateReadmeText() {
+                return `FAVIGEN — HOW TO USE YOUR FAVICON
+            =====================================
+            Thanks for using FaviGen! This ZIP contains your favicon in multiple sizes.
+            WHAT'S INSIDE
+            -------------
+            favicon-16x16.png   → Browser tab icon
+            favicon-32x32.png   → Browser tab icon (retina)
+            favicon-48x48.png   → Windows site icons
+            favicon-64x64.png   → Desktop shortcuts
+            favicon-128x128.png → Chrome Web Store icon
+            favicon-180x180.png → Apple touch icon (iOS home screen)
+            favicon-192x192.png → Android home screen icon
+            favicon-512x512.png → PWA splash screens / app icons
+            HOW TO INSTALL
+            ---------------
+            1. Upload all these PNG files to the root folder of your website
+            (the same folder as your index.html, usually /public or /).
+            2. Add the following code inside the <head> section of your HTML:
+            <link rel="icon" size="16x16" href="/favicon-16x16.png">
+            <link rel="icon" size="32x32" href="/favicon-32x32.png">
+            <link rel="apple-touch-icon" href="/favicon-180x180.png">
+            <link rel="manifest" href="/manifest.json">
+            3. That's it! Reload your site and your new favicon should appear
+            in the browser tab, bookmarks, and home screen shortcuts.
+            NEED HELP?
+            ----------
+            Visit ${window.location.origin} for more tools and support.
+            Generated by FaviGen — ${new Date().toLocaleDateString()}
+            `;
+            }
+            // then your existing click handler comes AFTER that
         $('#downloadZipBtn').on('click', async function() {
             const $btn = $(this);
             $btn.prop('disabled', true).css('opacity', 0.6);
@@ -2122,6 +2238,7 @@
                     const blob = await renderFaviconToBlob(size);
                     zip.file(`favicon-${size}x${size}.png`, blob);
                 }
+                zip.file('how-to-use.txt', generateReadmeText());
                 const content = await zip.generateAsync({ type: 'blob' });
                 const url = URL.createObjectURL(content);
                 const a = document.createElement('a');
